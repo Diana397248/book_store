@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Sasha",
+    "messeg": "hello, i`am Sasha, I love you!!!",
+    "file": ["json/ex","json/ex2"]
+  },
+  {
+    "name": "Diana",
+    "messeg": "hello, i`am Diana, I love too!!!",
+    "file": ["json/ex"]
+  }
+]
