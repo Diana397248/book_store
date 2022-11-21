@@ -1,0 +1,35 @@
+<div class="modal" tabindex="-1" id="add_edit_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="sample_form" type="reset">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dynamic_modal_title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Имя</label>
+                        <input type="text" name="first_name" id="first_name" class="form-control"/>
+                        <span id="first_name_error" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Фамилия</label>
+                        <input type="text" name="last_name" id="last_name" class="form-control"/>
+                        <span id="last_name_error" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Отчество</label>
+                        <input type="text" name="patronymic" id="patronymic" class="form-control"/>
+                        <span id="patronymic_error" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="id" id="id"/>
+                    <input type="hidden" name="action" id="action" value="Add"/>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" id="action_button">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

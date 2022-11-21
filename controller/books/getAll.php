@@ -1,5 +1,9 @@
 <?php
 
-require_once('books.php');
+require_once($_SERVER['DOCUMENT_ROOT'] .'/controller/books/books.php');
 
-getAllBooksApi();
+header('Content-Type: application/json');
+
+http_response_code(200);
+
+echo getAllBooksApi();

@@ -27,7 +27,7 @@ $DELETE_GENRE_SQL = "DELETE FROM GENRES WHERE ID = ?  ";
 $CREATE_GENRE_SQL = "INSERT INTO GENRES (GENRE)  
                     VALUES (?)";
 
-function geAllBooksBD()
+function getAllBooksBD()
 {
     global $connect;
     global $ALL_BOOKS_SQL;
@@ -47,6 +47,41 @@ function geAllBooksBD()
     return $bookArray;
 }
 
+function getAllAutorsBD()
+{
+    global $connect;
+    global $ALL_AUTHORS_SQL;
+    $authorsArray = [];
+    if ($result = $connect->query($ALL_AUTHORS_SQL)) {
+        foreach ($result as $row) {
+            $authorItem = new Author(
+                $row["ID"],
+                $row["FIRST_NAME"],
+                $row["LAST_NAME"],
+                $row["PATRONYMIC"]
+            );
+            $authorsArray[] = $authorItem;
+        }
+    }
+    return $authorsArray;
+}
+
+function getAllGenresBD()
+{
+    global $connect;
+    global $ALL_GENRES_SQL;
+    $genresArray = [];
+    if ($result = $connect->query($ALL_GENRES_SQL)) {
+        foreach ($result as $row) {
+            $genreItem = new Genre(
+                $row["ID"],
+                $row["GENRE"]
+            );
+            $genresArray[] = $genreItem;
+        }
+    }
+    return $genresArray;
+}
 
 
 

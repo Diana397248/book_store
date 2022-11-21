@@ -1,0 +1,42 @@
+<div class="modal" tabindex="-1" id="add_edit_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="sample_form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dynamic_modal_title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="first_name" id="first_name" class="form-control"/>
+                        <span id="first_name_error" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" id="last_name" class="form-control"/>
+                        <span id="last_name_error" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gender</label>
+                        <select name="gender" id="gender" class="form-control">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age</label>
+                        <input type="number" name="age" id="age" class="form-control"/>
+                        <span id="age_error" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="id" id="id"/>
+                    <input type="hidden" name="action" id="action" value="Add"/>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="action_button">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

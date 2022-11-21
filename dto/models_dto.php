@@ -8,8 +8,6 @@ class AuthorDto
     private $lastName;
     private $patronymic;
 
-
-
 }
 
 class BookDto

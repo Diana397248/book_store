@@ -1,13 +1,18 @@
 [
   {
-    "id": 1,
-    "name": "Puskin",
-    "authors":[ "петров", "сидоров" ]
-
+    "title": "sashalove",
+    "author": "Sasha",
+    "pathImg": "Lubowitz",
+    "yearOfIssue": "Drew",
+    "summary": "HE LOVE SHE",
+    "id": "1"
   },
   {
-    "id": 2,
-    "name": "lomoon",
-    "authors":[ "петров", "сидоров" ]
+    "title": "sasha",
+    "author": "Sasha",
+    "pathImg": "Lubowitz",
+    "yearOfIssue": "Dreww",
+    "summary": "HE LOVE ",
+    "id": "1"
   }
 ]

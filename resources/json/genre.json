@@ -1,42 +1,42 @@
 [
   {
-    "gener": "id",
+    "genre": "id",
     "id": "1"
   },
   {
-    "gener": "nulla",
+    "genre": "nulla",
     "id": "2"
   },
   {
-    "gener": "quas",
+    "genre": "quas",
     "id": "3"
   },
   {
-    "gener": "repellendus",
+    "genre": "repellendus",
     "id": "4"
   },
   {
-    "gener": "iusto",
+    "genre": "iusto",
     "id": "5"
   },
   {
-    "gener": "debitis",
+    "genre": "debitis",
     "id": "6"
   },
   {
-    "gener": "omnis",
+    "genre": "omnis",
     "id": "7"
   },
   {
-    "gener": "in",
+    "genre": "in",
     "id": "8"
   },
   {
-    "gener": "et",
+    "genre": "et",
     "id": "9"
   },
   {
-    "gener": "animi",
+    "genre": "animi",
     "id": "10"
   }
 ]
