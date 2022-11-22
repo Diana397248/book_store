@@ -1,2 +1,2 @@
 <?php
-header('Location: view/book/list_book/list_book.html');
+header('Location: view/book/carts/carts.html');

@@ -9,17 +9,13 @@ function getAllBooksApi(): string
 function createBook()
 {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        //чтение json объекта и преобразование в json
-        $json = file_get_contents('php://input');
-        $data = json_decode($json);
-
         //TODO authors
-        //получение данных с json
-        $idGenre = $data->idGenre;
-        $pathImg = $data->pathImg;
-        $title = $data->title;
-        $yearOfIssue = $data->yearOfIssue;
-        $summary = $data->summary;
+        //получение данных с формы
+        $idGenre = $_POST['idGenre'];
+        $pathImg = $_POST['pathImg'];
+        $title = $_POST['title'];
+        $yearOfIssue = $_POST['yearOfIssue'];
+        $summary = $_POST['summary'];
 
         //проверка что все поля заполнены
         if (empty($idGenre)
@@ -58,6 +54,4 @@ function createBook()
     }
 
     http_response_code(404);
-    return;
-
 }

@@ -47,19 +47,18 @@ function getAllBooksBD()
     return $bookArray;
 }
 
-function getAllAutorsBD()
+function getAllAuthorsBD()
 {
     global $connect;
     global $ALL_AUTHORS_SQL;
     $authorsArray = [];
     if ($result = $connect->query($ALL_AUTHORS_SQL)) {
         foreach ($result as $row) {
-            $authorItem = new Author(
-                $row["ID"],
-                $row["FIRST_NAME"],
-                $row["LAST_NAME"],
-                $row["PATRONYMIC"]
-            );
+            $authorItem = array();
+            $authorItem ['id'] = $row["ID"];
+            $authorItem ['firstName'] = $row["FIRST_NAME"];
+            $authorItem ['lastName'] = $row["LAST_NAME"];
+            $authorItem ['patronymic'] = $row["PATRONYMIC"];
             $authorsArray[] = $authorItem;
         }
     }
@@ -73,10 +72,9 @@ function getAllGenresBD()
     $genresArray = [];
     if ($result = $connect->query($ALL_GENRES_SQL)) {
         foreach ($result as $row) {
-            $genreItem = new Genre(
-                $row["ID"],
-                $row["GENRE"]
-            );
+            $genreItem = array();
+            $genreItem ['id'] = $row["ID"];
+            $genreItem ['genre']= $row["GENRE"];
             $genresArray[] = $genreItem;
         }
     }
@@ -92,6 +90,30 @@ function createBookBD($book)
     $stmt->bind_param('issis', $book['ID_GENRE'], $book['TITLE'], $book['PATH_IMG'],
         $book['YEAR_OF_ISSUE'], $book['SUMMARY']);
 
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
+
+function createAuthorBD($author)
+{
+    global $CREATE_AUTHOR_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($CREATE_AUTHOR_SQL);
+    $stmt->bind_param('sss', $author['FIRST_NAME'], $author['LAST_NAME'], $author['PATRONYMIC']);
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
+
+function createGenreBD($genre)
+{
+    global $CREATE_GENRE_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($CREATE_GENRE_SQL);
+    $stmt->bind_param('s', $genre['GENRE']);
     $stmt->execute();
 
 //    printf("%d row inserted.\n", $stmt->affected_rows);

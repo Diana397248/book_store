@@ -1,40 +1,19 @@
 function Add(event) {
-    //получаем все данные (значения) из формы ( инпутов)
-    let book_name = $('#title').val();
-    let genre = $('#genre').val();
-    let path_img = $('#path_img').val();
-    let year_of_issue = $('#year_of_issue').val();
-    let summary = $('#summary').val();
-
-    // формируем json
-    let request_data = {
-        'title': book_name,
-        'idGenre': genre,
-        'pathImg': path_img,
-        'yearOfIssue': year_of_issue,
-        'summary': summary,
-    }
-
-    // для дебага
-    // console.log(request_data)
-
-
     // отправляем данные на сервер
     $.ajax({
         type: 'POST',
         url: 'http://aboba/controller/books/createBook.php',
         // устанавливаем что получаемый тип данных json
         dataType: 'json',
-        // отправляем тип данных json
-        contentType: 'application/json',
-        // не забываем переделать в json строку через JSON.stringify
-        data: JSON.stringify(request_data),
+        data: $('#sample_form').serialize(),
         // при успешном выполнении выполянется функция
         success: function (data) {
+            //скрываем модальное окошко
             $('#add_edit_modal').modal('hide');
+            // обновляем и отрисовывваем все книжки с сервера
             getAllBook();
         },
-        //если не успешно 404 401 403 400 422
+        //если не успешно 404 401 403 400 422 (5ХХ 4ХХ)
         error: function (xhr, textStatus, error) {
             //чтоб получить и проверить статус код
             console.log(xhr.statusText);
@@ -76,8 +55,7 @@ function getAllBook() {
 
                 let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
                 let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
-
-
+                
                 action_edit.on("click", () => Edit(author.id))
                 action_delete.on("click", () => Delete(author.id))
 
