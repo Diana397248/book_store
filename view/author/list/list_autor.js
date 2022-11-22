@@ -24,7 +24,7 @@ function Delete(id) {
 
 $(document).ready(function () {
     $.getJSON("/resources/json/authors.json", function (data) {
-
+        let authorsHtml = $("#authors")
         for (let i = 0; i < data.length; i++) {
 
             let author = data[i]
@@ -58,14 +58,13 @@ $(document).ready(function () {
             row.append(patronymic);
             row.append(actions);
 
-
-            $("#authors").append(row)
+            authorsHtml.append(row);
 
 
             // console.log(data[i])
 
         }
-
+        authorsHtml.empty()
     })
 
     $(function () {

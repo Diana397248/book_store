@@ -1,7 +1,6 @@
 <?php
 
 
-require_once('models.php');
 require_once('connect.php');
 
 $ALL_BOOKS_SQL = 'SELECT * FROM BOOKS';
@@ -34,13 +33,14 @@ function getAllBooksBD()
     $bookArray = [];
     if ($result = $connect->query($ALL_BOOKS_SQL)) {
         foreach ($result as $row) {
-            $bookItem = new Book(
-                $row["ID"],
-                $row["ID_GENRE"],
-                $row["TITLE"],
-                $row["PATH_IMG"],
-                $row["YEAR_OF_ISSUE"],
-                $row["SUMMARY"]);
+            $bookItem = array();
+            $bookItem['id'] = $row["ID"];
+            $bookItem['idGenre'] = $row["ID_GENRE"];
+            $bookItem['pathImg'] = $row["PATH_IMG"];
+            $bookItem['title'] = $row["TITLE"];
+            $bookItem['yearOfIssue'] = $row["YEAR_OF_ISSUE"];
+            $bookItem['summary'] = $row["SUMMARY"];
+            $bookItem['authors'] = array();
             $bookArray[] = $bookItem;
         }
     }
@@ -83,6 +83,19 @@ function getAllGenresBD()
     return $genresArray;
 }
 
+function createBookBD($book)
+{
+    global $CREATE_BOOK_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($CREATE_BOOK_SQL);
+    $stmt->bind_param('issis', $book['ID_GENRE'], $book['TITLE'], $book['PATH_IMG'],
+        $book['YEAR_OF_ISSUE'], $book['SUMMARY']);
+
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
 
 
 

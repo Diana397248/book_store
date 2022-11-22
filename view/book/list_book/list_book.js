@@ -1,19 +1,47 @@
 function Add(event) {
-    console.log("Edit ")
-    let book_name = $('#' +
-        '').val();
+    //получаем все данные (значения) из формы ( инпутов)
+    let book_name = $('#title').val();
+    let genre = $('#genre').val();
     let path_img = $('#path_img').val();
     let year_of_issue = $('#year_of_issue').val();
     let summary = $('#summary').val();
 
+    // формируем json
     let request_data = {
-
         'title': book_name,
-        'path_img': path_img,
-        'year_of_issue': year_of_issue,
+        'idGenre': genre,
+        'pathImg': path_img,
+        'yearOfIssue': year_of_issue,
         'summary': summary,
     }
-    console.log(request_data)
+
+    // для дебага
+    // console.log(request_data)
+
+
+    // отправляем данные на сервер
+    $.ajax({
+        type: 'POST',
+        url: 'http://aboba/controller/books/createBook.php',
+        // устанавливаем что получаемый тип данных json
+        dataType: 'json',
+        // отправляем тип данных json
+        contentType: 'application/json',
+        // не забываем переделать в json строку через JSON.stringify
+        data: JSON.stringify(request_data),
+        // при успешном выполнении выполянется функция
+        success: function (data) {
+            $('#add_edit_modal').modal('hide');
+            getAllBook();
+        },
+        //если не успешно 404 401 403 400 422
+        error: function (xhr, textStatus, error) {
+            //чтоб получить и проверить статус код
+            console.log(xhr.statusText);
+            console.log(textStatus);
+            console.log(error);
+        }
+    });
 }
 
 
@@ -25,91 +53,68 @@ function Delete(id) {
     console.log("Delete " + id)
 }
 
+function getAllBook() {
+    $.ajax({
+        url: 'http://aboba/controller/books/getAll.php',
+        method: 'get',
+        dataType: 'json',
+        success: function (data) {
+            let $booksHtml = $("#books");
+            $booksHtml.empty()
 
-$(document).ready(function () {
-    $.getJSON("json/books.json", function (data) {
+            for (let i = 0; i < data.length; i++) {
+                let book = data[i]
+                let row = $("<tr></tr>");
 
-        for (let i = 0; i < data.length; i++) {
+                let id = $('<th  scope="row"></th>');
+                let name = $("<td></td>");
+                let authors = $("<td></td>");
+                let pathImg = $("<td></td>");
+                let yearOfIssue = $("<td></td>");
+                let summary = $("<td></td>");
+                let actions = $("<td></td>");
 
-            let book = data[i]
-            let row = $("<tr></tr>");
-            // row.addClass("row")
-
-            let id = $('<th  scope="row"></th>');
-            let name = $("<td></td>");
-            let authors = $("<td></td>");
-            let pathImg = $("<td></td>");
-            let yearOfIssue = $("<td></td>");
-            let summary = $("<td></td>");
-            let actions = $("<td></td>");
-
-            let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
-            let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
-
-
-            action_edit.on("click", () => Edit(author.id))
-            action_delete.on("click", () => Delete(author.id))
-
-            actions.append(action_edit);
-            actions.append(action_delete);
-
-            id.text(book.id);
-            name.text(book.name);
-            authors.text(book.authors.join(", "));
-            pathImg.text(book.pathImg);
-            yearOfIssue.text(book.yearOfIssue);
-            summary.text(book.summary);
+                let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
+                let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
 
 
-            row.append(id);
-            row.append(name);
-            row.append(authors);
-            row.append(pathImg);
-            row.append(yearOfIssue);
-            row.append(summary);
+                action_edit.on("click", () => Edit(author.id))
+                action_delete.on("click", () => Delete(author.id))
 
-            $("#books").append(row)
+                actions.append(action_edit);
+                actions.append(action_delete);
 
-            // console.log(data[i])
+                id.text(book.id);
+                name.text(book.title);
+                //TODO add genre
+                authors.text(book.authors.join(", "));
+                pathImg.text(book.pathImg);
+                yearOfIssue.text(book.yearOfIssue);
+                summary.text(book.summary);
 
+
+                row.append(id);
+                row.append(name);
+                row.append(authors);
+                row.append(pathImg);
+                row.append(yearOfIssue);
+                row.append(summary);
+                row.append(actions);
+
+                $booksHtml.append(row)
+
+                // console.log(data[i])
+
+            }
         }
-
     });
 
-    // $.ajax({
-    //     url: 'https://63726dea348e947299f54b07.mockapi.io/api/messages',
-    //     method: 'get',
-    //     dataType: 'json',
-    //     success: function (data) {
-    //
-    //         for (let i = 0; i < data.length; i++) {
-    //
-    //             let book = data[i]
-    //             let row = $("<tr></tr>");
-    //             // row.addClass("row")
-    //
-    //             let authors = $("<td></td>");
-    //             let name = $("<td></td>");
-    //             let id = $('<th  scope="row"></th>');
-    //
-    //             id.text(book.id)
-    //             name.text(book.name)
-    //             authors.text(book.authors.join(", "))
-    //
-    //             row.append(id)
-    //             row.append(name)
-    //             row.append(authors)
-    //
-    //             $("#books").append(row)
-    //
-    //
-    //             console.log(data[i])
-    //
-    //         }
-    //
-    //     }
-    // })
+}
 
+
+$(document).ready(function () {
+
+    getAllBook();
     $(function () {
         $('#footer').load('/view/global/footer/footer.html')
         $('#edit_add').load('/view/book/add_edit_book.html')
