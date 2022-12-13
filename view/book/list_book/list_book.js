@@ -100,9 +100,9 @@ function Delete(id) {
     console.log("Delete " + id)
 }
 
-function getAllBook() {
+function getAllBook(search) {
     $.ajax({
-        url: '/controller/books/getAll.php',
+        url: `/controller/books/getAll.php?search=${search || ""}`,
         method: 'get',
         dataType: 'json',
         success: function (data) {
@@ -158,6 +158,10 @@ function getAllBook() {
 
 }
 
+function search() {
+    let searchText = document.querySelector("#search_input").value;
+    getAllBook(searchText);
+}
 
 $(document).ready(function () {
 
@@ -166,7 +170,7 @@ $(document).ready(function () {
         $('#footer').load('/view/global/footer/footer.html')
         $('#edit_add').load('/view/book/add_edit_book.html')
     });
-
+    document.querySelector("#search").addEventListener("click", search)
     $('#add_data').click(function () {
 
         $('#dynamic_modal_title').text('Добавить книгу');

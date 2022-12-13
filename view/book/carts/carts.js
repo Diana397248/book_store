@@ -14,6 +14,7 @@ let template = () =>  $(`<div class="col mb-5">
                         <div class="text-center">
                             <!-- Product name-->
                             <h5 id="name" class="fw-bolder">Special Item</h5>
+                            <span id="genre" class="fw-bolder">Special Item</span>
                             <!-- Product reviews         TODO-->
 <!--                            <div class="d-flex justify-content-center small text-warning mb-2">-->
 <!--                                <div class="bi-star-fill"></div>-->
@@ -60,10 +61,10 @@ function getAllBook() {
 
                 id.text(book.id);
                 row.find('#name').text(book.title);
+                row.find('#genre').text(book.genre);
                 //TODO add cost
                 row.find('#price').text('1900');
                 row.find('#img').attr('src',book.pathImg);
-                //TODO add genre
                 authors.text(book.authors.join(", "));
                 yearOfIssue.text(book.yearOfIssue);
                 summary.text(book.summary);

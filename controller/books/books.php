@@ -1,9 +1,12 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . "/dao/bookRepository.php");
 
-function getAllBooksApi(): string
+function getAllBooksApi()
 {
-    return json_encode(getAllBooksBD());
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+        $search = $_GET['search'];
+        return json_encode(getAllBooksBD($search));
+    }
 }
 
 function createBook()

@@ -5,6 +5,7 @@ require_once('connect.php');
 
 
 $ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE;';
+$ALL_BOOKS_SQL_WITH_SEARCH = "SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE where b.title LIKE CONCAT('%',?,'%');";
 $BOOK_BY_ID_SQL = "SELECT b.*,g.genre GENRE FROM (SELECT * FROM BOOKS WHERE ID = ?) as b JOIN GENRES as g ON g.id=b.ID_GENRE";
 $EDIT_BOOK_SQL = " UPDATE BOOKS SET ID_GENRE = ?, TITLE = ?, PATH_IMG = ?, YEAR_OF_ISSUE = ?, SUMMARY = ? WHERE ID = ? ";
 $DELETE_BOOK_SQL = "DELETE FROM BOOKS WHERE ID = ?  ";
@@ -12,12 +13,25 @@ $CREATE_BOOK_SQL = "INSERT INTO BOOKS (ID_GENRE, TITLE , PATH_IMG , YEAR_OF_ISSU
                     VALUES (?, ?, ?, ?, ?)";
 
 
-function getAllBooksBD()
+function getAllBooksBD($search)
 {
     global $connect;
     global $ALL_BOOKS_SQL;
+    global $ALL_BOOKS_SQL_WITH_SEARCH;
+    $sql = $ALL_BOOKS_SQL;
+
+    $stmt = $connect->prepare($sql);
+
+
+    if (!empty($search)) {
+        $sql = $ALL_BOOKS_SQL_WITH_SEARCH;
+        $stmt = $connect->prepare($sql);
+        $stmt->bind_param("s", $search);
+    }
+
+    $stmt->execute();
     $bookArray = [];
-    if ($result = $connect->query($ALL_BOOKS_SQL)) {
+    if ($result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC)) {
         foreach ($result as $row) {
             $bookItem = array();
             $bookItem['id'] = $row["ID"];
