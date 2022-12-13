@@ -23,6 +23,45 @@ function Add(event) {
     });
 }
 
+function EditModal(id) {
+
+    // TODO get author from api whith id
+    let author = {
+
+        "id": id,
+        "name": "name",
+        "authors": "authors",
+        "idGenre": "idGenre",
+        "pathImg": "pathImg",
+        "yearOfIssue": "yearOfIssue",
+        "summary": "summary"
+    };
+
+
+    $('#dynamic_modal_title').text('Редактировать книгу');
+
+    //Cброс формы и всех ее значений инуптов
+    $('#sample_form')[0].reset();
+
+    // это обязательно должно ПОСЛЕ СБРОСА ФОРМЫ
+    $('#first_name').val(author.firstName);
+    $('#last_name').val(author.lastName);
+    $('#patronymic').val(author.patronymic);
+
+    $('#action').val('Изменить');
+
+    let sendButton = $('#action_button');
+    sendButton.on('click', () => Edit(author.id)
+    );
+    sendButton.text('Изменить');
+
+    // можно будет потом потом добавить выворлд ошибок валидации
+    $('.text-danger').text('');
+
+    $('#add_edit_modal').modal('show');
+
+
+}
 
 function Edit(id) {
 
@@ -56,9 +95,8 @@ function getAllBook() {
                 let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
                 let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
                 
-                action_edit.on("click", () => Edit(author.id))
-                action_delete.on("click", () => Delete(author.id))
-
+                action_edit.on("click", () => EditModal(book.id))
+                action_delete.on("click", () => Delete(book.id))
                 actions.append(action_edit);
                 actions.append(action_delete);
 

@@ -22,7 +22,7 @@ $CREATE_AUTHOR_SQL = "INSERT INTO AUTHORS (FIRST_NAME, LAST_NAME , PATRONYMIC )
 $ALL_GENRES_SQL = 'SELECT * FROM GENRES';
 $GENRE_BY_ID_SQL = "SELECT * FROM GENRES WHERE ID = ?";
 $EDIT_GENRE_SQL = " UPDATE GENRES SET GENRE = ? WHERE ID = ? ";
-$DELETE_GENRE_SQL = "DELETE FROM GENRES WHERE ID = ?  ";
+$DELETE_GENRE_SQL = "DELETE FROM GENRES WHERE ID = ? ";
 $CREATE_GENRE_SQL = "INSERT INTO GENRES (GENRE)  
                     VALUES (?)";
 
@@ -81,6 +81,9 @@ function getAllGenresBD()
     return $genresArray;
 }
 
+
+
+
 function createBookBD($book)
 {
     global $CREATE_BOOK_SQL;
@@ -90,18 +93,6 @@ function createBookBD($book)
     $stmt->bind_param('issis', $book['ID_GENRE'], $book['TITLE'], $book['PATH_IMG'],
         $book['YEAR_OF_ISSUE'], $book['SUMMARY']);
 
-    $stmt->execute();
-
-//    printf("%d row inserted.\n", $stmt->affected_rows);
-}
-
-function createAuthorBD($author)
-{
-    global $CREATE_AUTHOR_SQL;
-    global $connect;
-
-    $stmt = $connect->prepare($CREATE_AUTHOR_SQL);
-    $stmt->bind_param('sss', $author['FIRST_NAME'], $author['LAST_NAME'], $author['PATRONYMIC']);
     $stmt->execute();
 
 //    printf("%d row inserted.\n", $stmt->affected_rows);
@@ -119,16 +110,83 @@ function createGenreBD($genre)
 //    printf("%d row inserted.\n", $stmt->affected_rows);
 }
 
+function createAuthorBD($author)
+{
+    global $CREATE_AUTHOR_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($CREATE_AUTHOR_SQL);
+    $stmt->bind_param('sss', $author['FIRST_NAME'], $author['LAST_NAME'], $author['PATRONYMIC']);
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
 
 
 
 
 
+function updateAuthorBD($author)
+{
+    global $EDIT_AUTHOR_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($EDIT_AUTHOR_SQL);
+
+    $stmt->bind_param('sssi',
+        $author['FIRST_NAME'],
+        $author['LAST_NAME'],
+        $author['PATRONYMIC'],
+        $author['ID']
+    );
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
+
+function updateBookBD($book)
+{
+    global $EDIT_AUTHOR_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($EDIT_AUTHOR_SQL);
+    $stmt->bind_param('sssi',
+        $book['FIRST_NAME'],
+        $book['LAST_NAME'],
+        $book['PATRONYMIC'],
+        $book['ID']
+    );
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
+
+function updateGenreBD($genre)
+{
+    global $EDIT_GENRE_SQL;
+    global $connect;
+
+    $stmt = $connect->prepare($EDIT_GENRE_SQL);
+    $stmt->bind_param('si', $genre['GENRE'], $genre['ID']);
+    $stmt->execute();
+
+//    printf("%d row inserted.\n", $stmt->affected_rows);
+}
 
 
 
-
-
-
-
-
+//Вывод по id
+function getGenre($id)
+{
+    global $connect;
+    global $GENRE_BY_ID_SQL;
+    $genresArray = [];
+    if ($result = $connect->query($GENRE_BY_ID_SQL)) {
+        foreach ($result as $row) {
+            $genreItem = array();
+            $genreItem ['id'] = $row["ID"];
+            $genresArray[] = $genreItem;
+        }
+    }
+    return $genresArray[0];
+}

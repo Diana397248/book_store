@@ -25,7 +25,7 @@ let template = () =>  $(`<div class="col mb-5">
 <!--Ckidka-->
 <!--                            &lt;!&ndash; Product price&ndash;&gt;-->
 <!--                            <span class="text-muted text-decoration-line-through">$20.00</span>-->
-                            <span><span id="price">1893.00</span> руб.</span>
+<!--                            <span><span id="price">1893.00</span> руб.</span>-->
                         </div>
                     </div>
                     <!-- Product actions TODO добвить в корзину-->
