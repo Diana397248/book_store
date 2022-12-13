@@ -24,10 +24,14 @@
 <button type="button" class="btn btn-success" id="add_data">Добавить</button>
 <div class="container">
     <div class="row">
-        <div class="input-group w-70 input-group-lg">
-            <input type="text" class="form-control" id="search_input" placeholder="Найти книгу"
+        <div class="input-group  input-group-lg d-flex">
+            <input type="text" class="form-control w-50" id="search_input" placeholder="Найти книгу"
                    aria-label="Input group example" aria-describedby="basic-addon1">
-            <button class="input-group-text" id="search">
+            <select class="form-select w-25" aria-label=".form-select-lg example" id="genre_search">
+                <option value="asc">Жанры по убыванию</option>
+                <option value="desc">Жанры по возрастанию</option>
+            </select>
+            <button class="input-group-text " id="search">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
                      viewBox="0 0 16 16">
                     <path

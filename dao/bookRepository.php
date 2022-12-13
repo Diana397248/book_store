@@ -4,8 +4,11 @@
 require_once('connect.php');
 
 
-$ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE;';
-$ALL_BOOKS_SQL_WITH_SEARCH = "SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE where b.title LIKE CONCAT('%',?,'%');";
+$ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE ORDER BY GENRE;';
+$ALL_BOOKS_SQL_WITH_SEARCH = "SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE where b.title LIKE CONCAT('%',?,'%') 
+                                                                               ORDER BY
+                                                                                   case when ? = 'DESC'  then GENRE end DESC,
+                                                                                   case when ? = 'ASC' then GENRE  end ASC;";
 $BOOK_BY_ID_SQL = "SELECT b.*,g.genre GENRE FROM (SELECT * FROM BOOKS WHERE ID = ?) as b JOIN GENRES as g ON g.id=b.ID_GENRE";
 $EDIT_BOOK_SQL = " UPDATE BOOKS SET ID_GENRE = ?, TITLE = ?, PATH_IMG = ?, YEAR_OF_ISSUE = ?, SUMMARY = ? WHERE ID = ? ";
 $DELETE_BOOK_SQL = "DELETE FROM BOOKS WHERE ID = ?  ";
@@ -13,7 +16,7 @@ $CREATE_BOOK_SQL = "INSERT INTO BOOKS (ID_GENRE, TITLE , PATH_IMG , YEAR_OF_ISSU
                     VALUES (?, ?, ?, ?, ?)";
 
 
-function getAllBooksBD($search)
+function getAllBooksBD($search, $genreSort)
 {
     global $connect;
     global $ALL_BOOKS_SQL;
@@ -22,11 +25,18 @@ function getAllBooksBD($search)
 
     $stmt = $connect->prepare($sql);
 
-
-    if (!empty($search)) {
+    if (!empty($search) or !empty($genreSort)) {
+        $genreSortValue = "ASC";
+        $searchValue = "";
+        if (!empty($search)) {
+            $searchValue = $search;
+        }
+        if (!empty($genreSort)) {
+            $genreSortValue = $genreSort;
+        }
         $sql = $ALL_BOOKS_SQL_WITH_SEARCH;
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("s", $search);
+        $stmt->bind_param("sss", $searchValue, $genreSortValue, $genreSortValue);
     }
 
     $stmt->execute();

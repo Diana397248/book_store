@@ -100,9 +100,9 @@ function Delete(id) {
     console.log("Delete " + id)
 }
 
-function getAllBook(search) {
+function getAllBook(search, genreValue) {
     $.ajax({
-        url: `/controller/books/getAll.php?search=${search || ""}`,
+        url: `/controller/books/getAll.php?search=${search || ""}&genre_sort=${genreValue || "asc"}`,
         method: 'get',
         dataType: 'json',
         success: function (data) {
@@ -160,7 +160,8 @@ function getAllBook(search) {
 
 function search() {
     let searchText = document.querySelector("#search_input").value;
-    getAllBook(searchText);
+    let genreValue = document.querySelector("#genre_search").value;
+    getAllBook(searchText, genreValue);
 }
 
 $(document).ready(function () {

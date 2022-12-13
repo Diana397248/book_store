@@ -5,7 +5,8 @@ function getAllBooksApi()
 {
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $search = $_GET['search'];
-        return json_encode(getAllBooksBD($search));
+        $genreSort = $_GET['genre_sort'];
+        return json_encode(getAllBooksBD($search, $genreSort));
     }
 }
 
