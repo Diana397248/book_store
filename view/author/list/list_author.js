@@ -1,18 +1,4 @@
 function Add(event) {
-    // console.log("Edit ")
-    // let first_name = $('#first_name').val();
-    // let last_name = $('#last_name').val();
-    // let patronymic = $('#patronymic').val();
-    //
-    // let request_data = {
-    //
-    //     'firstName': first_name,
-    //     'lastName': last_name,
-    //     'patronymic': patronymic
-    // }
-    // console.log(request_data)
-
-    // отправляем данные на сервер
     $.ajax({
         type: 'POST',
         url: 'http://aboba/controller/authors/createAuthor.php',
@@ -36,48 +22,14 @@ function Add(event) {
     });
 }
 
-function EditModal(id) {
-
-    // TODO get author from api whith id
-    let author = {
-        "id": id,
-        "name": "firstName",
-        "lastName": "lastName",
-        "patronymic": "patronymic"
-    };
-
-
-    $('#dynamic_modal_title').text('Редактировать автора');
-
-    //Cброс формы и всех ее значений инуптов
-    $('#sample_form')[0].reset();
-
-    // это обязательно должно ПОСЛЕ СБРОСА ФОРМЫ
-    $('#first_name').val(author.firstName);
-    $('#last_name').val(author.lastName);
-    $('#patronymic').val(author.patronymic);
-
-    $('#action').val('Изменить');
-
-    let sendButton = $('#action_button');
-    sendButton.on('click', () => Edit(author.id)
-    );
-    sendButton.text('Изменить');
-
-    // можно будет потом потом добавить выворлд ошибок валидации
-    $('.text-danger').text('');
-
-    $('#add_edit_modal').modal('show');
-
-
-}
-
-
 function Edit(id) {
-
+    console.log('edit')
+    console.log(id)
     let first_name = $('#first_name').val();
     let last_name = $('#last_name').val();
     let patronymic = $('#patronymic').val();
+
+    let form = new FormData()
 
     let request_data = {
 
@@ -86,11 +38,63 @@ function Edit(id) {
         'lastName': last_name,
         'patronymic': patronymic
     }
+    console.log(request_data)
+    for (let key in request_data) {
+        console.log(`key ${key} value ${request_data[key]}`)
+        form.append(key, request_data[key]);
+    }
 
 
-    // console.log(request_data)
+    // отправляем данные на сервер
+    fetch("http://aboba/controller/authors/updateAuthor.php",
+        {
+            body: form,
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+            $('#add_edit_modal').modal('hide');
+            // обновляем и отрисовывваем все книжки с сервера
+            getAllAuthors();
+        })
+        .catch(err => console.log(err));
+
 
 }
+
+
+function EditModal(id) {
+    console.log('EditModal')
+    console.log(id)
+    $('#dynamic_modal_title').text('Редактировать автора');
+
+    $('#action').val('Изменить');
+
+    let sendButton = $('#action_button');
+    sendButton.off("click")
+    sendButton.on('click', () => Edit(id));
+    sendButton.text(`Редактировать`);
+
+    //Cброс формы и всех ее значений инуптов
+    $('#sample_form')[0].reset();
+
+    // можно будет потом потом добавить выворлд ошибок валидации
+    $('.text-danger').text('');
+
+    // TODO get author from api whith id
+    fetch(`http://aboba/controller/authors/getAuthorWithId.php?id=${id}`)
+        .then(res => res.json())
+        .then(author => {
+
+            $('#first_name').val(author.firstName);
+            $('#last_name').val(author.lastName);
+            $('#patronymic').val(author.patronymic);
+
+            $('#add_edit_modal').modal('show');
+
+        })
+}
+
 
 function Delete(id) {
     console.log("Delete " + id)
@@ -102,43 +106,13 @@ function getAllAuthors() {
         method: 'get',
         dataType: 'json',
         success: function (data) {
-            let $authorsHtml = $("#authors");
-            $authorsHtml.empty()
+            let authorsHtml = $("#authors");
+            authorsHtml.empty()
 
             for (let i = 0; i < data.length; i++) {
-                let author = data[i];
-                let row = $("<tr></tr>");
-
-                let id = $('<th  scope="row"></th>');
-                let firstName = $("<td></td>");
-                let lastName = $("<td></td>");
-                let patronymic = $("<td></td>");
-                let actions = $("<td></td>");
-
-                let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
-                let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
-
-                action_edit.on("click", () => EditModal(author.id))
-                action_delete.on("click", () => Delete(author.id))
-
-                actions.append(action_edit);
-                actions.append(action_delete);
-
-                id.text(author.id);
-                firstName.text(author.firstName);
-                lastName.text(author.lastName);
-                patronymic.text(author.patronymic);
-                //TODO add genre
-
-
-                row.append(id);
-                row.append(firstName);
-                row.append(lastName);
-                row.append(patronymic);
-                row.append(actions);
-
-
-                $authorsHtml.append(row)
+                let author = data[i]
+                let row = createHtmlAuthors(author);
+                authorsHtml.append(row)
 
                 // console.log(data[i])
 
@@ -147,50 +121,41 @@ function getAllAuthors() {
     });
 }
 
+function createHtmlAuthors(author) {
+
+    let row = $("<tr></tr>");
+    // row.addClass("row")
+
+    let id = $('<th  scope="row"></th>');
+    let firstName = $("<td></td>");
+    let lastName = $("<td></td>");
+    let patronymic = $("<td></td>");
+    let actions = $("<td></td>");
+
+    let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
+    let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
+
+    action_edit.on("click", () => EditModal(author.id))
+    action_delete.on("click", () => Delete(author.id))
+
+    actions.append(action_edit);
+    actions.append(action_delete);
+
+    id.text(author.id);
+    firstName.text(author.firstName);
+    lastName.text(author.lastName);
+    patronymic.text(author.patronymic);
+
+
+    row.append(id);
+    row.append(firstName);
+    row.append(lastName);
+    row.append(patronymic);
+    row.append(actions);
+    return row;
+}
+
 $(document).ready(function () {
-    $.getJSON("/resources/json/authors.json", function (data) {
-        let authorsHtml = $("#authors")
-        for (let i = 0; i < data.length; i++) {
-
-            let author = data[i]
-            let row = $("<tr></tr>");
-            // row.addClass("row")
-
-            let id = $('<th  scope="row"></th>');
-            let firstName = $("<td></td>");
-            let lastName = $("<td></td>");
-            let patronymic = $("<td></td>");
-            let actions = $("<td></td>");
-
-            let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
-            let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
-
-            action_edit.on("click", () => Edit(author.id))
-            action_delete.on("click", () => Delete(author.id))
-
-            actions.append(action_edit);
-            actions.append(action_delete);
-
-            id.text(author.id);
-            firstName.text(author.firstName);
-            lastName.text(author.lastName);
-            patronymic.text(author.patronymic);
-
-
-            row.append(id);
-            row.append(firstName);
-            row.append(lastName);
-            row.append(patronymic);
-            row.append(actions);
-
-            authorsHtml.append(row);
-
-
-            // console.log(data[i])
-
-        }
-        authorsHtml.empty()
-    })
 
     $(function () {
         getAllAuthors()
@@ -208,7 +173,8 @@ $(document).ready(function () {
         $('#action').val('Добавить');
 
         let sendButton = $('#action_button');
-        sendButton.on('click', Add);
+        sendButton.off("click")
+        sendButton.click(() => Add());
         sendButton.text('Добавить');
 
         $('.text-danger').text('');
