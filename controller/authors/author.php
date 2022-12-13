@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/dao/repository.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/dao/authorRepository.php");
 
 function getAllAuthorsApi(): string
 {
@@ -50,7 +50,8 @@ function createAuthor()
     http_response_code(404);
 }
 
-function updateAuthor(){
+function updateAuthor()
+{
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //получение данных с формы
         $id = $_POST['id'];
@@ -95,4 +96,23 @@ function updateAuthor(){
 
     http_response_code(404);
 }
+
+function getAuthorWithId()
+{
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+        //получение данных с формы
+        $id = $_GET['id'];
+
+
+        //проверка что все поля заполнены
+        if (empty($id) ){
+            //не правильно заполненная сущность
+            http_response_code(422);
+            return;
+        }
+        return json_encode(getAuthorWithIdBD($id));
+    }
+
+}
+
 

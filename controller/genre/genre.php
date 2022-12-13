@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/dao/repository.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/dao/genreRepository.php");
 
 function getAllGenresApi(): string
 {
