@@ -88,7 +88,7 @@ function updateBookBD($book)
 
     if (empty($book['PATH_IMG'])) {
         $stmt = $connect->prepare($EDIT_BOOK_SQL_NO_SAVE_FILE);
-        $stmt->bind_param('issisi',
+        $stmt->bind_param('isisi',
             $book['ID_GENRE'],
             $book['TITLE'],
             $book['YEAR_OF_ISSUE'],
