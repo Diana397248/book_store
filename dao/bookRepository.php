@@ -4,11 +4,8 @@
 require_once('connect.php');
 
 
-$ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE ORDER BY GENRE;';
-$ALL_BOOKS_SQL_WITH_SEARCH = "SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE where b.title LIKE CONCAT('%',?,'%') 
-                                                                               ORDER BY
-                                                                                   case when ? = 'DESC'  then GENRE end DESC,
-                                                                                   case when ? = 'ASC' then GENRE  end ASC;";
+$ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE';
+$ALL_BOOKS_SQL_WITH_SEARCH = "SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE where b.title LIKE CONCAT('%',?,'%')";
 $BOOK_BY_ID_SQL = "SELECT b.*,g.genre GENRE FROM (SELECT * FROM BOOKS WHERE ID = ?) as b JOIN GENRES as g ON g.id=b.ID_GENRE";
 $EDIT_BOOK_SQL = " UPDATE BOOKS SET ID_GENRE = ?, TITLE = ?, PATH_IMG = ?, YEAR_OF_ISSUE = ?, SUMMARY = ? WHERE ID = ? ";
 $DELETE_BOOK_SQL = "DELETE FROM BOOKS WHERE ID = ?  ";
@@ -23,20 +20,23 @@ function getAllBooksBD($search, $genreSort)
     global $ALL_BOOKS_SQL_WITH_SEARCH;
     $sql = $ALL_BOOKS_SQL;
 
+
+    if (!empty($search)) {
+        $sql = $ALL_BOOKS_SQL_WITH_SEARCH;
+    }
+
+    $sortGenreTemplate = " ORDER BY GENRE ";
+    if (!empty($genreSort) && $genreSort == "ASC") {
+        $sql = $sql . $sortGenreTemplate . "ASC";
+    } else if (!empty($genreSort) && $genreSort == "DESC") {
+        $sql = $sql . $sortGenreTemplate . 'DESC';
+    }
+
     $stmt = $connect->prepare($sql);
 
-    if (!empty($search) or !empty($genreSort)) {
-        $genreSortValue = "ASC";
-        $searchValue = "";
-        if (!empty($search)) {
-            $searchValue = $search;
-        }
-        if (!empty($genreSort)) {
-            $genreSortValue = $genreSort;
-        }
-        $sql = $ALL_BOOKS_SQL_WITH_SEARCH;
+    if (!empty($search)) {
         $stmt = $connect->prepare($sql);
-        $stmt->bind_param("sss", $searchValue, $genreSortValue, $genreSortValue);
+        $stmt->bind_param("s", $search);
     }
 
     $stmt->execute();
