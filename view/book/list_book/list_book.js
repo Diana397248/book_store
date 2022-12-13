@@ -24,47 +24,76 @@ function Add(event) {
 }
 
 function EditModal(id) {
-
-    // TODO get author from api whith id
-    let author = {
-
-        "id": id,
-        "name": "name",
-        "authors": "authors",
-        "idGenre": "idGenre",
-        "pathImg": "pathImg",
-        "yearOfIssue": "yearOfIssue",
-        "summary": "summary"
-    };
-
-
     $('#dynamic_modal_title').text('Редактировать книгу');
-
-    //Cброс формы и всех ее значений инуптов
-    $('#sample_form')[0].reset();
-
-    // это обязательно должно ПОСЛЕ СБРОСА ФОРМЫ
-    $('#first_name').val(author.firstName);
-    $('#last_name').val(author.lastName);
-    $('#patronymic').val(author.patronymic);
 
     $('#action').val('Изменить');
 
     let sendButton = $('#action_button');
-    sendButton.on('click', () => Edit(author.id)
-    );
-    sendButton.text('Изменить');
-
+    sendButton.off("click")
+    sendButton.on('click', () => Edit(id));
+    sendButton.text(`Редактировать`);
+    //Cброс формы и всех ее значений инуптов
+    $('#sample_form')[0].reset();
     // можно будет потом потом добавить выворлд ошибок валидации
     $('.text-danger').text('');
 
-    $('#add_edit_modal').modal('show');
+    fetch(`/controller/books/getBookWithId.php?id=${id}`)
+        .then(res => res.json())
+        .then(book => {
+            let genresHtml = document.querySelector("#genres").querySelector(`option[value="${book.idGenre}"]`)
+            genresHtml.selected = true;
 
+            $('#title').val(book.title);
+            $('#path_img').val(book.pathImg);
+            $('#year_of_issue').val(book.yearOfIssue);
+            $('#summary').val(book.summary);
+
+            $('#add_edit_modal').modal('show');
+
+        })
 
 }
 
 function Edit(id) {
+    console.log('edit')
+    console.log(id)
+    let path_img = $('#path_img').val();
+    let year_of_issue = $('#year_of_issue').val();
+    let summary = $('#summary').val();
+    let title = $('#title').val();
+    let genre = $('#genres').val();
 
+    let form = new FormData()
+
+    let request_data = {
+        "id": id,
+        "idGenre": genre,
+        "pathImg": path_img,
+        "title": title,
+        "yearOfIssue": year_of_issue,
+        "summary": summary,
+        "authors": []
+    }
+    console.log(request_data)
+    for (let key in request_data) {
+        console.log(`key ${key} value ${request_data[key]}`)
+        form.append(key, request_data[key]);
+    }
+
+
+    // отправляем данные на сервер
+    fetch("/controller/books/updateBook.php",
+        {
+            body: form,
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+            $('#add_edit_modal').modal('hide');
+            // обновляем и отрисовывваем все книжки с сервера
+            getAllBook();
+        })
+        .catch(err => console.log(err));
 }
 
 function Delete(id) {
@@ -95,7 +124,7 @@ function getAllBook() {
 
                 let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
                 let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
-                
+
                 action_edit.on("click", () => EditModal(book.id))
                 action_delete.on("click", () => Delete(book.id))
                 actions.append(action_edit);
@@ -147,6 +176,7 @@ $(document).ready(function () {
         $('#action').val('Добавить');
 
         let sendButton = $('#action_button');
+        sendButton.off("click")
         sendButton.on('click', Add);
         sendButton.text('Добавить');
 

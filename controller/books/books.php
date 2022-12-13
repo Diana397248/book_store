@@ -56,9 +56,11 @@ function createBook()
     http_response_code(404);
 }
 
-function updateBook(){
+function updateBook()
+{
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //получение данных с формы
+        $id = $_POST['id'];
         $idGenre = $_POST['idGenre'];
         $pathImg = $_POST['pathImg'];
         $title = $_POST['title'];
@@ -66,7 +68,9 @@ function updateBook(){
         $summary = $_POST['summary'];;
 
         //проверка что все поля заполнены
-        if (empty($idGenre)
+        if (
+            empty($id)
+            or empty($idGenre)
             or empty($pathImg)
             or empty($title)
             or empty($yearOfIssue)
@@ -80,12 +84,12 @@ function updateBook(){
         //Создаем объект с нужными полями для БД
         $bookItem = array();
 
+        $bookItem['ID'] = $id;
         $bookItem['ID_GENRE'] = $idGenre;
         $bookItem['TITLE'] = $title;
         $bookItem['PATH_IMG'] = $pathImg;
         $bookItem['YEAR_OF_ISSUE'] = $yearOfIssue;
         $bookItem['SUMMARY'] = $summary;
-
 
 
         //для тестирования что находится в $authorItem
@@ -104,4 +108,23 @@ function updateBook(){
     }
 
     http_response_code(404);
+}
+
+
+function getBookWithId()
+{
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+        //получение данных с формы
+        $id = $_GET['id'];
+
+
+        //проверка что все поля заполнены
+        if (empty($id)) {
+            //не правильно заполненная сущность
+            http_response_code(422);
+            return;
+        }
+        return json_encode(getBookWithIdBD($id));
+    }
+
 }
