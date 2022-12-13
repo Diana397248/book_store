@@ -1,26 +1,36 @@
 function Add(event) {
-    // отправляем данные на сервер
-    $.ajax({
-        type: 'POST',
-        url: '/controller/books/createBook.php',
-        // устанавливаем что получаемый тип данных json
-        dataType: 'json',
-        data: $('#sample_form').serialize(),
-        // при успешном выполнении выполянется функция
-        success: function (data) {
-            //скрываем модальное окошко
+
+    let year_of_issue = $('#year_of_issue').val();
+    let summary = $('#summary').val();
+    let title = $('#title').val();
+    let genre = $('#genres').val();
+
+    let formData = new FormData()
+
+    let request_data = {
+        "idGenre": genre,
+        "title": title,
+        "yearOfIssue": year_of_issue,
+        "summary": summary
+    }
+    console.log(request_data)
+    for (let key in request_data) {
+        console.log(`key ${key} value ${request_data[key]}`)
+        formData.append(key, request_data[key]);
+    }
+    const fileInput = document.querySelector('#path_img');
+    formData.append('file', fileInput.files[0]);
+    const options = {
+        method: 'POST',
+        body: formData,
+    };
+
+    fetch('/controller/books/createBook.php', options)
+        .then(res => {
             $('#add_edit_modal').modal('hide');
             // обновляем и отрисовывваем все книжки с сервера
             getAllBook();
-        },
-        //если не успешно 404 401 403 400 422 (5ХХ 4ХХ)
-        error: function (xhr, textStatus, error) {
-            //чтоб получить и проверить статус код
-            console.log(xhr.statusText);
-            console.log(textStatus);
-            console.log(error);
-        }
-    });
+        });
 }
 
 function EditModal(id) {

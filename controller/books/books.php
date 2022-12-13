@@ -10,20 +10,29 @@ function getAllBooksApi()
     }
 }
 
+function uploadImage($image)
+{
+    $name = $image['name'];
+    $tmp_name = $image ['tmp_name'];
+    $filename = '../../resources/uploads/' . $name;
+    $filenameForBd = '/resources/uploads/' . $name;
+    move_uploaded_file($tmp_name, $filename);
+    return $filenameForBd;
+}
+
 function createBook()
 {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //TODO authors
         //получение данных с формы
         $idGenre = $_POST['idGenre'];
-        $pathImg = $_POST['pathImg'];
+
         $title = $_POST['title'];
         $yearOfIssue = $_POST['yearOfIssue'];
         $summary = $_POST['summary'];
-
         //проверка что все поля заполнены
         if (empty($idGenre)
-            or empty($pathImg)
+            or is_null($_FILES['file'])
             or empty($title)
             or empty($yearOfIssue)
             or empty($summary)) {
@@ -31,8 +40,8 @@ function createBook()
             http_response_code(422);
             return;
         }
-
-
+        $pathImg = uploadImage($_FILES['file']);
+        echo $pathImg;
         //Создаем объект с нужными полями для БД
         $bookItem = array();
         $bookItem['ID_GENRE'] = $idGenre;
