@@ -4,7 +4,6 @@ function Add(event) {
     let summary = $('#summary').val();
     let title = $('#title').val();
     let genre = $('#genres').val();
-
     let formData = new FormData()
 
     let request_data = {
@@ -54,7 +53,8 @@ function EditModal(id) {
             genresHtml.selected = true;
 
             $('#title').val(book.title);
-            $('#path_img').val(book.pathImg);
+            $('#pre_img').attr("src", book.pathImg);
+            $('#pre_img').show()
             $('#year_of_issue').val(book.yearOfIssue);
             $('#summary').val(book.summary);
 
@@ -185,6 +185,7 @@ $(document).ready(function () {
     $('#add_data').click(function () {
 
         $('#dynamic_modal_title').text('Добавить книгу');
+        $('#pre_img').hide()
 
         $('#sample_form')[0].reset();
 
