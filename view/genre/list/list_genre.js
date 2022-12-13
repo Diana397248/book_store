@@ -1,36 +1,8 @@
-// $(document).ready(function () {
-    // $.getJSON("/resources/json/genre.json", function (data) {
-    //
-    //     for (let i = 0; i < data.length; i++) {
-    //
-    //         let genre = data[i]
-    //         let row = $("<tr></tr>");
-    //         // row.addClass("row")
-    //
-    //         let id = $('<th  scope="row"></th>');
-    //         let nameGenre = $("<td></td>");
-    //
-    //
-    //         id.text(genre.id)
-    //         nameGenre.text(genre.genre)
-    //
-    //
-    //         row.append(id)
-    //         row.append(nameGenre)
-    //
-    //         $("#genres").append(row)
-    //
-    //
-    //         // console.log(data[i])
-    //
-    //     }
-    //
-    // })    Э
 function Add(event) {
     // отправляем данные на сервер
     $.ajax({
         type: 'POST',
-        url: 'http://aboba/controller/genre/createGenre.php',
+        url: '/controller/genre/createGenre.php',
         // устанавливаем что получаемый тип данных json
         dataType: 'json',
         data: $('#sample_form').serialize(),
@@ -52,50 +24,61 @@ function Add(event) {
 }
 
 function EditModal(id) {
-
-    // TODO get author from api whith id
-    let genre = {
-        "id": id,
-        "name": "name",
-
-    };
-
-
     $('#dynamic_modal_title').text('Редактировать жанр');
-
-    //Cброс формы и всех ее значений инуптов
-    $('#sample_form')[0].reset();
-
-    // это обязательно должно ПОСЛЕ СБРОСА ФОРМЫ
-    $('#name').val(genre.name);
-
 
     $('#action').val('Изменить');
 
     let sendButton = $('#action_button');
-    sendButton.on('click', () => Edit(genre.id)
-    );
-    sendButton.text('Изменить');
+    sendButton.off("click")
+    sendButton.on('click', () => Edit(id));
+    sendButton.text(`Редактировать`);
+
+    //Cброс формы и всех ее значений инуптов
+    $('#sample_form')[0].reset();
 
     // можно будет потом потом добавить выворлд ошибок валидации
     $('.text-danger').text('');
 
-    $('#add_edit_modal').modal('show');
+    fetch(`/controller/genre/getGenreWithId.php?id=${id}`)
+        .then(res => res.json())
+        .then(genre => {
+            $('#genre').val(genre.genre);
+            $('#add_edit_modal').modal('show');
 
+        })
 
 }
 
 function Edit(id) {
-    let name = $('#name').val();
+    let genre =  $('#genre').val();
+
+    let form = new FormData()
 
     let request_data = {
-
         'id': id,
-        'name': name,
+        'genre': genre,
+    }
+    for (let key in request_data) {
+        console.log(`key ${key} value ${request_data[key]}`)
+        form.append(key, request_data[key]);
     }
 
 
-    // console.log(request_data)
+    // отправляем данные на сервер
+    fetch("/controller/genre/updateGenre.php",
+        {
+            body: form,
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+            $('#add_edit_modal').modal('hide');
+            // обновляем и отрисовывваем все книжки с сервера
+            getAllGenre();
+        })
+        .catch(err => console.log(err));
+
+
 }
 
 function Delete(id) {
@@ -103,49 +86,48 @@ function Delete(id) {
 }
 
 function getAllGenre() {
-        $.ajax({
-            url: 'http://aboba/controller/genre/getAll.php',
-            method: 'get',
-            dataType: 'json',
-            success: function (data) {
-                let $genresHtml = $("#genres");
-                $genresHtml.empty()
+    $.ajax({
+        url: '/controller/genre/getAll.php',
+        method: 'get',
+        dataType: 'json',
+        success: function (data) {
+            let $genresHtml = $("#genres");
+            $genresHtml.empty()
 
-                for (let i = 0; i < data.length; i++) {
-                    let genre = data[i]
-                    let row = $("<tr></tr>");
+            for (let i = 0; i < data.length; i++) {
+                let genre = data[i]
+                let row = $("<tr></tr>");
 
-                    let id = $('<th  scope="row"></th>');
-                    let name = $("<td></td>");
-                    let actions = $("<td></td>");
+                let id = $('<th  scope="row"></th>');
+                let name = $("<td></td>");
+                let actions = $("<td></td>");
 
-                    let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
-                    let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
+                let action_edit = $("<button type='button' class='btn btn-info mr-1'>Редактировать</button>");
+                let action_delete = $("<button type='button' class='btn btn-danger'>Удалить</button>");
 
-                    action_edit.on("click", () => EditModal(genre.id))
-                    action_delete.on("click", () => Delete(genre.id))
+                action_edit.on("click", () => EditModal(genre.id))
+                action_delete.on("click", () => Delete(genre.id))
 
-                    actions.append(action_edit);
-                    actions.append(action_delete);
+                actions.append(action_edit);
+                actions.append(action_delete);
 
-                    id.text(genre.id);
-                    name.text(genre.genre);
-
-
-
-                    row.append(id);
-                    row.append(name);
-                    row.append(actions);
+                id.text(genre.id);
+                name.text(genre.genre);
 
 
-                    $genresHtml.append(row)
+                row.append(id);
+                row.append(name);
+                row.append(actions);
 
-                    // console.log(data[i])
 
-                }
+                $genresHtml.append(row)
+
+                // console.log(data[i])
+
             }
-        });
-    }
+        }
+    });
+}
 
 $(document).ready(function () {
     getAllGenre();
@@ -161,6 +143,7 @@ $(document).ready(function () {
         $('#action').val('Добавить');
 
         let sendButton = $('#action_button');
+        sendButton.off("click")
         sendButton.on('click', Add);
         sendButton.text('Добавить');
 

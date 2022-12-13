@@ -88,3 +88,21 @@ function updateGenre()
     http_response_code(404);
 }
 
+
+function getGenreWithId()
+{
+    if ($_SERVER["REQUEST_METHOD"] == "GET") {
+        //получение данных с формы
+        $id = $_GET['id'];
+
+
+        //проверка что все поля заполнены
+        if (empty($id) ){
+            //не правильно заполненная сущность
+            http_response_code(422);
+            return;
+        }
+        return json_encode(getGenreWithIdBD($id));
+    }
+
+}

@@ -1,7 +1,7 @@
 function Add(event) {
     $.ajax({
         type: 'POST',
-        url: 'http://aboba/controller/authors/createAuthor.php',
+        url: '/controller/authors/createAuthor.php',
         // устанавливаем что получаемый тип данных json
         dataType: 'json',
         data: $('#sample_form').serialize(),
@@ -46,7 +46,7 @@ function Edit(id) {
 
 
     // отправляем данные на сервер
-    fetch("http://aboba/controller/authors/updateAuthor.php",
+    fetch("/controller/authors/updateAuthor.php",
         {
             body: form,
             method: "POST"
@@ -64,8 +64,6 @@ function Edit(id) {
 
 
 function EditModal(id) {
-    console.log('EditModal')
-    console.log(id)
     $('#dynamic_modal_title').text('Редактировать автора');
 
     $('#action').val('Изменить');
@@ -82,7 +80,7 @@ function EditModal(id) {
     $('.text-danger').text('');
 
     // TODO get author from api whith id
-    fetch(`http://aboba/controller/authors/getAuthorWithId.php?id=${id}`)
+    fetch(`/controller/authors/getAuthorWithId.php?id=${id}`)
         .then(res => res.json())
         .then(author => {
 
@@ -102,7 +100,7 @@ function Delete(id) {
 
 function getAllAuthors() {
     $.ajax({
-        url: 'http://aboba/controller/authors/getAll.php',
+        url: '/controller/authors/getAll.php',
         method: 'get',
         dataType: 'json',
         success: function (data) {

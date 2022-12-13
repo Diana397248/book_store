@@ -4,7 +4,7 @@
 require_once('connect.php');
 
 
-$ALL_BOOKS_SQL = 'SELECT * FROM BOOKS';
+$ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE;';
 $BOOK_BY_ID_SQL = "SELECT * FROM BOOKS WHERE ID = ?";
 $EDIT_BOOK_SQL = " UPDATE BOOKS SET ID_GENRE = ?, TITLE = ?, PATH_IMG = ?, YEAR_OF_ISSUE = ?, SUMMARY = ? WHERE ID = ? ";
 $DELETE_BOOK_SQL = "DELETE FROM BOOKS WHERE ID = ?  ";
@@ -24,6 +24,7 @@ function getAllBooksBD()
             $bookItem = array();
             $bookItem['id'] = $row["ID"];
             $bookItem['idGenre'] = $row["ID_GENRE"];
+            $bookItem['genre'] = $row["GENRE"];
             $bookItem['pathImg'] = $row["PATH_IMG"];
             $bookItem['title'] = $row["TITLE"];
             $bookItem['yearOfIssue'] = $row["YEAR_OF_ISSUE"];
@@ -63,3 +64,5 @@ function updateBookBD($book)
 
 //    printf("%d row inserted.\n", $stmt->affected_rows);
 }
+
+

@@ -38,7 +38,7 @@ let template = () =>  $(`<div class="col mb-5">
 
 function getAllBook() {
     $.ajax({
-        url: 'http://aboba/controller/books/getAll.php',
+        url: '/controller/books/getAll.php',
         method: 'get',
         dataType: 'json',
         success: function (data) {

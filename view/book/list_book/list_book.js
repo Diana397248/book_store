@@ -2,7 +2,7 @@ function Add(event) {
     // отправляем данные на сервер
     $.ajax({
         type: 'POST',
-        url: 'http://aboba/controller/books/createBook.php',
+        url: '/controller/books/createBook.php',
         // устанавливаем что получаемый тип данных json
         dataType: 'json',
         data: $('#sample_form').serialize(),
@@ -73,7 +73,7 @@ function Delete(id) {
 
 function getAllBook() {
     $.ajax({
-        url: 'http://aboba/controller/books/getAll.php',
+        url: '/controller/books/getAll.php',
         method: 'get',
         dataType: 'json',
         success: function (data) {
@@ -87,6 +87,7 @@ function getAllBook() {
                 let id = $('<th  scope="row"></th>');
                 let name = $("<td></td>");
                 let authors = $("<td></td>");
+                let genre = $("<td></td>");
                 let pathImg = $("<td></td>");
                 let yearOfIssue = $("<td></td>");
                 let summary = $("<td></td>");
@@ -102,7 +103,7 @@ function getAllBook() {
 
                 id.text(book.id);
                 name.text(book.title);
-                //TODO add genre
+                genre.text(book.genre);
                 authors.text(book.authors.join(", "));
                 pathImg.text(book.pathImg);
                 yearOfIssue.text(book.yearOfIssue);
@@ -111,6 +112,7 @@ function getAllBook() {
 
                 row.append(id);
                 row.append(name);
+                row.append(genre);
                 row.append(authors);
                 row.append(pathImg);
                 row.append(yearOfIssue);

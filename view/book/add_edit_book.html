@@ -17,10 +17,14 @@
                         <input type="text" name="authors" id="authors" class="form-control"/>
                         <span id="authors_error" class="text-danger"></span>
                     </div>
+                    <!--                    <div class="mb-3">-->
+                    <!--                        <label class="form-label">Жанр id</label>-->
+                    <!--                        <input type="text" name="idGenre" id="genre" class="form-control"/>-->
+                    <!--                        <span id="genre_error" class="text-danger"></span>-->
+                    <!--                    </div>-->
                     <div class="mb-3">
-                        <label class="form-label">Жанр id</label>
-                        <input type="text" name="idGenre" id="genre" class="form-control"/>
-                        <span id="genre_error" class="text-danger"></span>
+                        <select name="idGenre" class="form-select" aria-label="Выберете жанр" id="genres">
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Обложка книги</label>
@@ -44,6 +48,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
                     <button type="button" class="btn btn-primary" id="action_button">Add</button>
                 </div>
+                <script src="/view/book/add_edit_book.js"></script>
             </form>
         </div>
     </div>
