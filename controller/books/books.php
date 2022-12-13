@@ -41,7 +41,6 @@ function createBook()
             return;
         }
         $pathImg = uploadImage($_FILES['file']);
-        echo $pathImg;
         //Создаем объект с нужными полями для БД
         $bookItem = array();
         $bookItem['ID_GENRE'] = $idGenre;
@@ -75,7 +74,6 @@ function updateBook()
         //получение данных с формы
         $id = $_POST['id'];
         $idGenre = $_POST['idGenre'];
-        $pathImg = $_POST['pathImg'];
         $title = $_POST['title'];
         $yearOfIssue = $_POST['yearOfIssue'];
         $summary = $_POST['summary'];;
@@ -84,7 +82,6 @@ function updateBook()
         if (
             empty($id)
             or empty($idGenre)
-            or empty($pathImg)
             or empty($title)
             or empty($yearOfIssue)
             or empty($summary)) {
@@ -92,7 +89,10 @@ function updateBook()
             http_response_code(422);
             return;
         }
-
+        $pathImg = '';
+        if (!is_null($_FILES['file'])) {
+            $pathImg = uploadImage($_FILES['file']);
+        }
 
         //Создаем объект с нужными полями для БД
         $bookItem = array();

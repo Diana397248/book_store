@@ -67,7 +67,6 @@ function EditModal(id) {
 function Edit(id) {
     console.log('edit')
     console.log(id)
-    let path_img = $('#path_img').val();
     let year_of_issue = $('#year_of_issue').val();
     let summary = $('#summary').val();
     let title = $('#title').val();
@@ -78,25 +77,23 @@ function Edit(id) {
     let request_data = {
         "id": id,
         "idGenre": genre,
-        "pathImg": path_img,
         "title": title,
         "yearOfIssue": year_of_issue,
         "summary": summary,
-        "authors": []
     }
-    console.log(request_data)
     for (let key in request_data) {
         console.log(`key ${key} value ${request_data[key]}`)
         form.append(key, request_data[key]);
     }
-
+    const fileInput = document.querySelector('#path_img');
+    form.append('file', fileInput.files[0]);
+    const options = {
+        method: 'POST',
+        body: form,
+    };
 
     // отправляем данные на сервер
-    fetch("/controller/books/updateBook.php",
-        {
-            body: form,
-            method: "POST"
-        })
+    fetch("/controller/books/updateBook.php", options)
         .then(res => res.json())
         .then(data => {
             $('#add_edit_modal').modal('hide');
@@ -144,7 +141,10 @@ function getAllBook(search, genreValue) {
                 name.text(book.title);
                 genre.text(book.genre);
                 authors.text(book.authors.join(", "));
-                pathImg.text(book.pathImg);
+
+                let img = $("<img style='width: 150px; height: 150px;;'>")
+                img.attr('src', book.pathImg)
+                pathImg.append(img);
                 yearOfIssue.text(book.yearOfIssue);
                 summary.text(book.summary);
 

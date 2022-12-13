@@ -7,6 +7,7 @@ require_once('connect.php');
 $ALL_BOOKS_SQL = 'SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE';
 $ALL_BOOKS_SQL_WITH_SEARCH = "SELECT b.*,g.genre GENRE  FROM BOOKS as b  JOIN GENRES as g ON g.id=b.ID_GENRE where b.title LIKE CONCAT('%',?,'%')";
 $BOOK_BY_ID_SQL = "SELECT b.*,g.genre GENRE FROM (SELECT * FROM BOOKS WHERE ID = ?) as b JOIN GENRES as g ON g.id=b.ID_GENRE";
+$EDIT_BOOK_SQL_NO_SAVE_FILE = " UPDATE BOOKS SET ID_GENRE = ?, TITLE = ?, YEAR_OF_ISSUE = ?, SUMMARY = ? WHERE ID = ? ";
 $EDIT_BOOK_SQL = " UPDATE BOOKS SET ID_GENRE = ?, TITLE = ?, PATH_IMG = ?, YEAR_OF_ISSUE = ?, SUMMARY = ? WHERE ID = ? ";
 $DELETE_BOOK_SQL = "DELETE FROM BOOKS WHERE ID = ?  ";
 $CREATE_BOOK_SQL = "INSERT INTO BOOKS (ID_GENRE, TITLE , PATH_IMG , YEAR_OF_ISSUE , SUMMARY)  
@@ -81,18 +82,33 @@ function createBookBD($book)
 function updateBookBD($book)
 {
     global $EDIT_BOOK_SQL;
+    global $EDIT_BOOK_SQL_NO_SAVE_FILE;
     global $connect;
 
-    $stmt = $connect->prepare($EDIT_BOOK_SQL);
-    $stmt->bind_param('issisi',
-        $book['ID_GENRE'],
-        $book['TITLE'],
-        $book['PATH_IMG'],
-        $book['YEAR_OF_ISSUE'],
-        $book['SUMMARY'],
-        $book['ID']
-    );
-    $stmt->execute();
+
+    if (empty($book['PATH_IMG'])) {
+        $stmt = $connect->prepare($EDIT_BOOK_SQL_NO_SAVE_FILE);
+        $stmt->bind_param('issisi',
+            $book['ID_GENRE'],
+            $book['TITLE'],
+            $book['YEAR_OF_ISSUE'],
+            $book['SUMMARY'],
+            $book['ID']
+        );
+        $stmt->execute();
+    } else {
+        $stmt = $connect->prepare($EDIT_BOOK_SQL);
+        $stmt->bind_param('issisi',
+            $book['ID_GENRE'],
+            $book['TITLE'],
+            $book['PATH_IMG'],
+            $book['YEAR_OF_ISSUE'],
+            $book['SUMMARY'],
+            $book['ID']
+        );
+        $stmt->execute();
+    }
+
 
 //    printf("%d row inserted.\n", $stmt->affected_rows);
 }
